@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftPage Pro | The 60-Second Website Engine</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .bg-gradient-pro { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+        .theme-stealth { background: #0f172a !important; color: #f8fafc !important; }
+        .theme-stealth .prose { color: #94a3b8 !important; }
+    </style>
+</head>
+<body class="h-screen flex flex-col bg-slate-50 overflow-hidden">
+    <header class="bg-white border-b px-8 py-4 flex justify-between items-center z-50">
+        <h1 class="text-2xl font-black tracking-tight">SwiftPage<span class="text-indigo-600">.</span></h1>
+        <button onclick="exportSite()" class="bg-gradient-pro text-white px-8 py-3 rounded-2xl text-sm font-extrabold shadow-xl">Publish & Launch</button>
+    </header>
+    <main class="flex-1 flex overflow-hidden">
+        <textarea id="editor" class="w-1/2 p-12 text-lg focus:outline-none border-r" placeholder="# Start your product..."></textarea>
+        <section id="preview" class="w-1/2 overflow-y-auto p-12 prose prose-indigo max-w-none bg-white"></section>
+    </main>
+    <script>
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+        function render() {
+            preview.innerHTML = DOMPurify.sanitize(marked.parse(editor.value));
+            localStorage.setItem('sp_v4', editor.value);
+        }
+        function exportSite() {
+            const blob = new Blob([`<html><head><script src="https://cdn.tailwindcss.com?plugins=typography"><\/script></head><body class="prose p-10 mx-auto">${preview.innerHTML}</body></html>`], {type: 'text/html'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'index.html'; a.click();
+        }
+        editor.oninput = render;
+        window.onload = () => { editor.value = localStorage.getItem('sp_v4') || "# 🚀 Hello World"; render(); };
+    </script>
+</body>
+</html>
